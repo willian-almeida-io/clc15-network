@@ -1,29 +1,9 @@
-# AWS Resilient Multi-AZ Network with Terraform
-
-Projeto de Infrastructure as Code (IaC) para provisionamento de uma arquitetura de rede corporativa altamente disponível, segura e resiliente na AWS, projetada para suportar workloads de missão crítica com isolamento de tráfego e conformidade de segurança.
-
----
-
-## Principais Destaques Tecnicos
-
-* **Alta Disponibilidade (Multi-AZ):** Distribuicao equilibrada de subnets publicas e privadas em multiplas zonas geograficas independentes (us-east-1a e us-east-1b).
-* **Isolamento de Cargas Privadas:** Instancias nas redes privadas nao possuem IPs publicos e saem para a internet exclusivamente via NAT Gateways dedicados por AZ, eliminando pontos unicos de falha (SPOF).
-* **Hardening de Seguranca:** Trancamento e controle do default security group para mitigar regras permissivas automaticas.
-* **Auditoria e Observabilidade:** Configuracao de VPC Flow Logs com exportacao direta para bucket S3 para analise de trafego e conformidade.
-* **Gerenciamento de Estado Seguro:** Armazenamento centralizado do arquivo de estado (terraform.tfstate) em backend remoto no Amazon S3.
-
----
-
-## Como Executar
-
-### Pre-requisitos
-* Terraform instalado (versao >= 1.5)
-* AWS CLI instalado e configurado (`aws configure`)
-* Bucket S3 pre-existente para armazenamento do backend remoto (`clc15-willian-terraform`)
-
-### Passo a Passo
-
-1. Clone o repositorio:
-```bash
-git clone https://github.com/willian-almeida-io/clc15-network.git
-cd clc15-network
+🌐 AWS Resilient Multi-AZ Network with TerraformProjeto de Infrastructure as Code (IaC) para provisionamento de uma arquitetura de rede corporativa altamente disponível, segura e resiliente na AWS, projetada para suportar workloads de missão crítica com isolamento de tráfego e conformidade de segurança.📌 Principais Destaques TécnicosAlta Disponibilidade (Multi-AZ): Distribuição equilibrada de subnets públicas e privadas em múltiplas zonas geográficas independentes (us-east-1a e us-east-1b)[cite: 2].Isolamento de Cargas Privadas: Instâncias nas redes privadas não possuem IPs públicos e saem para a internet exclusivamente via NAT Gateways dedicados por AZ, eliminando pontos únicos de falha (Single Point of Failure - SPOF)[cite: 2].Hardening de Segurança: Trancamento e controle do default security group para mitigar regras permissivas automáticas[cite: 2].Auditoria e Observabilidade: Configuração de VPC Flow Logs com exportação direta para bucket S3 para análise de tráfego e conformidade[cite: 2].Gerenciamento de Estado Seguro: Armazenamento centralizado do arquivo de estado (terraform.tfstate) em backend remoto no Amazon S3[cite: 1].🚀 Como Executar o Projeto Passo a PassoPré-requisitosTer o Terraform instalado (versão >= 1.5).Ter a AWS CLI instalada e autenticada com suas credenciais.Ter o bucket S3 pré-criado para o backend remoto (clc15-willian-terraform)[cite: 1].Passo 1: Clonar o repositórioAbra o seu terminal e faça o clone do projeto:Bashgit clone https://github.com/willian-almeida-io/clc15-network.git
+Entre na pasta do projeto:Bashcd clc15-network
+Passo 2: Inicializar o TerraformBaixe os provedores e conecte ao backend remoto no S3:Bashterraform init
+Passo 3: Validar a sintaxe do códigoVerifique se a formatação e a sintaxe dos arquivos .tf estão corretas:Bashterraform fmt -check
+Bashterraform validate
+Passo 4: Planejar o provisionamentoGere um preview detalhado de todos os recursos que serão criados na AWS:Bashterraform plan
+Passo 5: Aplicar a infraestruturaProvisione os recursos diretamente na AWS:Bashterraform apply
+(Digite yes quando o Terraform solicitar confirmação no terminal).Passo 6: Descomissionamento (Cleanup de Custos)Ao finalizar os testes, destrua os recursos para não gerar custos adicionais na AWS:Bashterraform destroy
+(Digite yes para confirmar a destruição dos recursos).📋 Documentação Técnica (Terraform Docs)RequirementsNameVersionaws6.42.0ProvidersNameVersionaws6.42.0ResourcesNameTypeaws_default_security_group.defaultresourceaws_eip.tf_ip_nat_1aresourceaws_eip.tf_ip_nat_1bresourceaws_flow_log.exampleresourceaws_internet_gateway.tf_igwresourceaws_nat_gateway.tf_natgateway_1aresourceaws_nat_gateway.tf_natgateway_1bresourceaws_route_table.tf_private_rt_1aresourceaws_route_table.tf_private_rt_1bresourceaws_route_table.tf_public_rtresourceaws_route_table_association.private_1a_associationresourceaws_route_table_association.private_1b_associationresourceaws_route_table_association.public_1a_associationresourceaws_route_table_association.public_1b_associationresourceaws_subnet.subnet_private_1aresourceaws_subnet.subnet_private_1bresourceaws_subnet.subnet_public_1aresourceaws_subnet.subnet_public_1bresourceaws_vpc.terraform_vpcresourceOutputsNameDescriptionvpc_idId da VPC
