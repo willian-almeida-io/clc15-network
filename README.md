@@ -1,49 +1,36 @@
-## Requirements
+# 🌐 AWS Resilient Multi-AZ Network with Terraform
 
-| Name | Version |
-| ---- | ------- |
-| <a name="requirement_aws"></a> [aws](#requirement\_aws) | 6.42.0 |
+[![Terraform](https://img.shields.io/badge/Terraform-1.5%2B-623CE4?logo=terraform&logoColor=white)](https://www.terraform.io/)
+[![AWS Provider](https://img.shields.io/badge/AWS_Provider-6.42.0-FF9900?logo=amazon-aws&logoColor=white)](https://registry.terraform.io/providers/hashicorp/aws/latest)
+[![Architecture](https://img.shields.io/badge/Architecture-Multi--AZ-007acc)](#-arquitetura-da-solucao)
 
-## Providers
+Projeto de Infrastructure as Code (IaC) para provisionamento de uma arquitetura de rede corporativa altamente disponível, segura e resiliente na AWS, projetada para suportar workloads de missão crítica com isolamento de tráfego e conformidade de segurança.
 
-| Name | Version |
-| ---- | ------- |
-| <a name="provider_aws"></a> [aws](#provider\_aws) | 6.42.0 |
+---
 
-## Modules
+## 🏛️ Arquitetura da Solução
 
-No modules.
+O projeto provisiona uma Virtual Private Cloud (VPC) distribuída em duas Zonas de Disponibilidade (`us-east-1a` e `us-east-1b`):
 
-## Resources
-
-| Name | Type |
-| ---- | ---- |
-| [aws_default_security_group.default](https://registry.terraform.io/providers/hashicorp/aws/6.42.0/docs/resources/default_security_group) | resource |
-| [aws_eip.tf_ip_nat_1a](https://registry.terraform.io/providers/hashicorp/aws/6.42.0/docs/resources/eip) | resource |
-| [aws_eip.tf_ip_nat_1b](https://registry.terraform.io/providers/hashicorp/aws/6.42.0/docs/resources/eip) | resource |
-| [aws_flow_log.example](https://registry.terraform.io/providers/hashicorp/aws/6.42.0/docs/resources/flow_log) | resource |
-| [aws_internet_gateway.tf_igw](https://registry.terraform.io/providers/hashicorp/aws/6.42.0/docs/resources/internet_gateway) | resource |
-| [aws_nat_gateway.tf_natgateway_1a](https://registry.terraform.io/providers/hashicorp/aws/6.42.0/docs/resources/nat_gateway) | resource |
-| [aws_nat_gateway.tf_natgateway_1b](https://registry.terraform.io/providers/hashicorp/aws/6.42.0/docs/resources/nat_gateway) | resource |
-| [aws_route_table.tf_private_rt_1a](https://registry.terraform.io/providers/hashicorp/aws/6.42.0/docs/resources/route_table) | resource |
-| [aws_route_table.tf_private_rt_1b](https://registry.terraform.io/providers/hashicorp/aws/6.42.0/docs/resources/route_table) | resource |
-| [aws_route_table.tf_public_rt](https://registry.terraform.io/providers/hashicorp/aws/6.42.0/docs/resources/route_table) | resource |
-| [aws_route_table_association.private_1a_association](https://registry.terraform.io/providers/hashicorp/aws/6.42.0/docs/resources/route_table_association) | resource |
-| [aws_route_table_association.private_1b_association](https://registry.terraform.io/providers/hashicorp/aws/6.42.0/docs/resources/route_table_association) | resource |
-| [aws_route_table_association.public_1a_association](https://registry.terraform.io/providers/hashicorp/aws/6.42.0/docs/resources/route_table_association) | resource |
-| [aws_route_table_association.public_1b_association](https://registry.terraform.io/providers/hashicorp/aws/6.42.0/docs/resources/route_table_association) | resource |
-| [aws_subnet.subnet_private_1a](https://registry.terraform.io/providers/hashicorp/aws/6.42.0/docs/resources/subnet) | resource |
-| [aws_subnet.subnet_private_1b](https://registry.terraform.io/providers/hashicorp/aws/6.42.0/docs/resources/subnet) | resource |
-| [aws_subnet.subnet_public_1a](https://registry.terraform.io/providers/hashicorp/aws/6.42.0/docs/resources/subnet) | resource |
-| [aws_subnet.subnet_public_1b](https://registry.terraform.io/providers/hashicorp/aws/6.42.0/docs/resources/subnet) | resource |
-| [aws_vpc.terraform_vpc](https://registry.terraform.io/providers/hashicorp/aws/6.42.0/docs/resources/vpc) | resource |
-
-## Inputs
-
-No inputs.
-
-## Outputs
-
-| Name | Description |
-| ---- | ----------- |
-| <a name="output_vpc_id"></a> [vpc\_id](#output\_vpc\_id) | Id da VPC |
+```text
+               +-------------------------------------------------------------+
+               |                  AWS Region (us-east-1)                     |
+               |                                                             |
+               |                   Internet Gateway (IGW)                    |
+               |                             |                               |
+               |     +-----------------------+-------------------------+     |
+               |     |                                                 |     |
+               |  [AZ 1a]                                           [AZ 1b]  |
+               |  +---------------------------+   +-----------------------+  |
+Public Subnet  |  | Subnet Pública (10.0.1.0) |   | Subnet Pública        |  |
+               |  | [NAT Gateway 1a]          |   | (10.0.2.0)            |  |
+               |  +-------------|-------------+   | [NAT Gateway 1b]      |  |
+               |                |                 +-----------|-----------+  |
+               |                |                             |              |
+Private Subnet |  +-------------v-------------+   +-----------v-----------+  |
+               |  | Subnet Privada            |   | Subnet Privada        |  |
+               |  | (10.0.100.0)              |   | (10.0.200.0)          |  |
+               |  +---------------------------+   +-----------------------+  |
+               +-------------------------------------------------------------+
+                                      |
+                     [VPC Flow Logs -> Amazon S3 Bucket]
