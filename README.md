@@ -1,36 +1,29 @@
-# 🌐 AWS Resilient Multi-AZ Network with Terraform
-
-[![Terraform](https://img.shields.io/badge/Terraform-1.5%2B-623CE4?logo=terraform&logoColor=white)](https://www.terraform.io/)
-[![AWS Provider](https://img.shields.io/badge/AWS_Provider-6.42.0-FF9900?logo=amazon-aws&logoColor=white)](https://registry.terraform.io/providers/hashicorp/aws/latest)
-[![Architecture](https://img.shields.io/badge/Architecture-Multi--AZ-007acc)](#-arquitetura-da-solucao)
+# AWS Resilient Multi-AZ Network with Terraform
 
 Projeto de Infrastructure as Code (IaC) para provisionamento de uma arquitetura de rede corporativa altamente disponível, segura e resiliente na AWS, projetada para suportar workloads de missão crítica com isolamento de tráfego e conformidade de segurança.
 
 ---
 
-## 🏛️ Arquitetura da Solução
+## Principais Destaques Tecnicos
 
-O projeto provisiona uma Virtual Private Cloud (VPC) distribuída em duas Zonas de Disponibilidade (`us-east-1a` e `us-east-1b`):
+* **Alta Disponibilidade (Multi-AZ):** Distribuicao equilibrada de subnets publicas e privadas em multiplas zonas geograficas independentes (us-east-1a e us-east-1b).
+* **Isolamento de Cargas Privadas:** Instancias nas redes privadas nao possuem IPs publicos e saem para a internet exclusivamente via NAT Gateways dedicados por AZ, eliminando pontos unicos de falha (SPOF).
+* **Hardening de Seguranca:** Trancamento e controle do default security group para mitigar regras permissivas automaticas.
+* **Auditoria e Observabilidade:** Configuracao de VPC Flow Logs com exportacao direta para bucket S3 para analise de trafego e conformidade.
+* **Gerenciamento de Estado Seguro:** Armazenamento centralizado do arquivo de estado (terraform.tfstate) em backend remoto no Amazon S3.
 
-```text
-               +-------------------------------------------------------------+
-               |                  AWS Region (us-east-1)                     |
-               |                                                             |
-               |                   Internet Gateway (IGW)                    |
-               |                             |                               |
-               |     +-----------------------+-------------------------+     |
-               |     |                                                 |     |
-               |  [AZ 1a]                                           [AZ 1b]  |
-               |  +---------------------------+   +-----------------------+  |
-Public Subnet  |  | Subnet Pública (10.0.1.0) |   | Subnet Pública        |  |
-               |  | [NAT Gateway 1a]          |   | (10.0.2.0)            |  |
-               |  +-------------|-------------+   | [NAT Gateway 1b]      |  |
-               |                |                 +-----------|-----------+  |
-               |                |                             |              |
-Private Subnet |  +-------------v-------------+   +-----------v-----------+  |
-               |  | Subnet Privada            |   | Subnet Privada        |  |
-               |  | (10.0.100.0)              |   | (10.0.200.0)          |  |
-               |  +---------------------------+   +-----------------------+  |
-               +-------------------------------------------------------------+
-                                      |
-                     [VPC Flow Logs -> Amazon S3 Bucket]
+---
+
+## Como Executar
+
+### Pre-requisitos
+* Terraform instalado (versao >= 1.5)
+* AWS CLI instalado e configurado (`aws configure`)
+* Bucket S3 pre-existente para armazenamento do backend remoto (`clc15-willian-terraform`)
+
+### Passo a Passo
+
+1. Clone o repositorio:
+```bash
+git clone https://github.com/willian-almeida-io/clc15-network.git
+cd clc15-network
