@@ -58,55 +58,64 @@ Private Subnet |  +-------------v-------------+   +-----------v-----------+  |
 
 ---
 
-1. Clonar o repositório
+## 1. Clonar o repositório
 
-Clone o repositório GitHub e acesse o diretório do projeto:
-
+```bash
 git clone https://github.com/willian-almeida-io/clc15-network.git
-
 cd clc15-network
+```
 
-2. Inicializar o Terraform
 
-Baixe os provedores necessários e inicialize o backend remoto no Amazon S3, caso esteja configurado no projeto.
 
+## 2. Inicializar o Terraform
+
+```bash
 terraform init
+```
 
-3. Validar a sintaxe do código
+
+
+## 3. Validar a sintaxe do código
 
 Verifique a formatação e valide os arquivos de configuração do Terraform:
 
+```bash
 terraform fmt -check
 terraform validate
-
+```
 
 Para formatar automaticamente os arquivos, execute:
 
+```bash
 terraform fmt -recursive
+```
 
-4. Planejar o provisionamento
+## 4. Planejar o provisionamento
 
 Gere um plano para visualizar os recursos que serão criados, modificados ou destruídos na AWS:
 
+```bash
 terraform plan
+```
 
-5. Aplicar a infraestrutura
+## 5. Aplicar a infraestrutura
 
 Provisione os recursos definidos na configuração do Terraform:
 
+```bash
 terraform apply
-
+```
 
 Revise o plano e confirme a operação quando solicitado.
 
-6. Destruir a infraestrutura
+## 6. Destruir a infraestrutura
 
 Após concluir os testes, remova os recursos gerenciados pelo Terraform para evitar custos desnecessários:
 
+```bash
 terraform destroy
-
-
-Atenção: esse comando pode excluir recursos e dados importantes. Revise o plano antes de confirmar.
+```
+**Atenção:** revise os recursos que serão excluídos antes de confirmar a operação.
 
 Documentação técnica do Terraform
 
@@ -138,20 +147,38 @@ aws_route_table_association.private_1a_association	Resource	Associação da subn
 aws_route_table_association.private_1b_association	Resource	Associação da subnet privada 1b à tabela de rotas.
 aws_flow_log.example	Resource	Configuração de VPC Flow Logs com destino em um bucket S3.
 aws_default_security_group.default	Resource	Configuração de segurança do Security Group padrão.
+
 Outputs
+
 Nome	Descrição
 vpc_id	Identificador único da VPC provisionada.
 
 Observações importantes
+
 Configure as credenciais da AWS antes de executar o provisionamento.
+
 Verifique se o backend remoto S3 está configurado corretamente antes de executar terraform init.
+
 Confirme se a versão do AWS Provider é compatível com os arquivos do projeto.
+
 As NAT Gateways, os endereços IP elásticos e outros recursos podem gerar custos enquanto estiverem ativos.
+
 Os recursos descritos nesta documentação devem ser conferidos com os arquivos Terraform existentes no repositório.
 
 
 
+---
 
+## 👨‍💻 Autor
+
+**Willian Carlos de Almeida Silva**
+
+- 📧 **E-mail:** [willian.carlosalmeidasilva@gmail.com](mailto:willian.carlosalmeidasilva@gmail.com)
+- 🛠️ **Projeto:** CLC15 Network — Infraestrutura AWS com Terraform
+
+Desenvolvido com foco em infraestrutura como código (IaC), automação e boas práticas de arquitetura de redes na AWS.
+
+---
 
 
 
