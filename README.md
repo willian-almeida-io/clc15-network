@@ -41,121 +41,122 @@ Private Subnet |  +-------------v-------------+   +-----------v-----------+  |
 
 ## 📌 Principais Destaques Técnicos
 
-* **Alta Disponibilidade (Multi-AZ):** Distribuição equilibrada de subnets públicas e privadas em múltiplas zonas geográficas independentes (`us-east-1a` e `us-east-1b`)[cite: 7].
-* **Isolamento de Cargas Privadas:** Instâncias nas redes privadas não possuem IPs públicos e saem para a internet exclusivamente via **NAT Gateways dedicados por AZ**, eliminando pontos únicos de falha (Single Point of Failure - SPOF)[cite: 7].
-* **Hardening de Segurança:** Trancamento e controle do `default security group` para mitigar regras permissivas automáticas[cite: 7].
-* **Auditoria e Observabilidade:** Configuração de **VPC Flow Logs** com exportação direta para bucket S3 para análise de tráfego e conformidade[cite: 7].
-* **Gerenciamento de Estado Seguro:** Armazenamento centralizado do arquivo de estado (`terraform.tfstate`) em backend remoto no Amazon S3[cite: 1, 7].
+* **Alta Disponibilidade (Multi-AZ):** Distribuição equilibrada de subnets públicas e privadas em múltiplas zonas geográficas independentes (`us-east-1a` e `us-east-1b`).
+* **Isolamento de Cargas Privadas:** Instâncias nas redes privadas não possuem IPs públicos e saem para a internet exclusivamente via **NAT Gateways dedicados por AZ**, eliminando pontos únicos de falha (Single Point of Failure - SPOF).
+* **Hardening de Segurança:** Trancamento e controle do `default security group` para mitigar regras permissivas automáticas.
+* **Auditoria e Observabilidade:** Configuração de **VPC Flow Logs** com exportação direta para bucket S3 para análise de tráfego e conformidade.
+* **Gerenciamento de Estado Seguro:** Armazenamento centralizado do arquivo de estado (`terraform.tfstate`) em backend remoto no Amazon S3.
 
 ---
 
 ## 🚀 Como Executar o Projeto Passo a Passo
 
 ### Pré-requisitos
-* Ter o **Terraform** instalado (versão >= 1.5)[cite: 7].
-* Ter a **AWS CLI** instalada e autenticada com suas credenciais (`aws configure`)[cite: 7].
-* Ter o bucket S3 pré-criado para o backend remoto (`clc15-willian-terraform`)[cite: 1, 7].
+* Ter o **Terraform** instalado (versão >= 1.5).
+* Ter a **AWS CLI** instalada e autenticada com suas credenciais (`aws configure`).
+* Ter o bucket S3 pré-criado para o backend remoto (`clc15-willian-terraform`).
 
 ---
 
-### Passo 1: Clonar o repositório
-Clone o projeto em seu ambiente local e acesse o diretório[cite: 7]:
+1. Clonar o repositório
 
-```bash
-git clone [https://github.com/willian-almeida-io/clc15-network.git](https://github.com/willian-almeida-io/clc15-network.git)
+Clone o repositório GitHub e acesse o diretório do projeto:
+
+git clone https://github.com/willian-almeida-io/clc15-network.git
+
 cd clc15-network
-```[cite: 7]
 
----
+2. Inicializar o Terraform
 
-### Passo 2: Inicializar o Terraform
-Baixe os provedores necessários e configure a conexão com o backend remoto no S3[cite: 7]:
+Baixe os provedores necessários e inicialize o backend remoto no Amazon S3, caso esteja configurado no projeto.
 
-```bash
 terraform init
-```[cite: 7]
 
----
+3. Validar a sintaxe do código
 
-### Passo 3: Validar a sintaxe do código
-Verifique a formatação e a integridade da sintaxe dos arquivos de configuração[cite: 7]:
+Verifique a formatação e valide os arquivos de configuração do Terraform:
 
-```bash
 terraform fmt -check
 terraform validate
-```[cite: 7]
 
----
 
-### Passo 4: Planejar o provisionamento
-Gere um preview detalhado de todos os recursos que serão criados na AWS[cite: 7]:
+Para formatar automaticamente os arquivos, execute:
 
-```bash
+terraform fmt -recursive
+
+4. Planejar o provisionamento
+
+Gere um plano para visualizar os recursos que serão criados, modificados ou destruídos na AWS:
+
 terraform plan
-```[cite: 7]
 
----
+5. Aplicar a infraestrutura
 
-### Passo 5: Aplicar a infraestrutura
-Provisione a infraestrutura completa na sua conta AWS[cite: 7]:
+Provisione os recursos definidos na configuração do Terraform:
 
-```bash
 terraform apply
-```[cite: 7]
 
----
 
-### Passo 6: Descomissionamento (Cleanup)
-Para destruir os recursos e evitar custos na conta AWS após os testes[cite: 7]:
+Revise o plano e confirme a operação quando solicitado.
 
-```bash
+6. Destruir a infraestrutura
+
+Após concluir os testes, remova os recursos gerenciados pelo Terraform para evitar custos desnecessários:
+
 terraform destroy
-```[cite: 7]
 
----
 
-## 📋 Documentação Técnica (Terraform Docs)
+Atenção: esse comando pode excluir recursos e dados importantes. Revise o plano antes de confirmar.
 
-### Requirements
+Documentação técnica do Terraform
 
-| Name | Version |
-| --- | --- |
-| aws | 6.42.0 |[cite: 7]
+Requirements
+Nome	Versão
+Terraform	Compatível com a configuração do projeto
+AWS Provider	6.42.0
+Providers
+Nome	Versão
+aws	6.42.0
+Recursos criados
+Recurso	Tipo	Descrição
+aws_vpc.terraform_vpc	Resource	VPC com bloco CIDR 10.0.0.0/16.
+aws_subnet.subnet_public_1a	Resource	Subnet pública na AZ 1a, com CIDR 10.0.1.0/24.
+aws_subnet.subnet_public_1b	Resource	Subnet pública na AZ 1b, com CIDR 10.0.2.0/24.
+aws_subnet.subnet_private_1a	Resource	Subnet privada na AZ 1a, com CIDR 10.0.100.0/24.
+aws_subnet.subnet_private_1b	Resource	Subnet privada na AZ 1b, com CIDR 10.0.200.0/24.
+aws_internet_gateway.tf_igw	Resource	Internet Gateway conectado à VPC.
+aws_eip.tf_ip_nat_1a	Resource	IP Elástico para a NAT Gateway da AZ 1a.
+aws_eip.tf_ip_nat_1b	Resource	IP Elástico para a NAT Gateway da AZ 1b.
+aws_nat_gateway.tf_natgateway_1a	Resource	NAT Gateway para saída à internet na AZ 1a.
+aws_nat_gateway.tf_natgateway_1b	Resource	NAT Gateway para saída à internet na AZ 1b.
+aws_route_table.tf_public_rt	Resource	Tabela de rotas públicas com saída via Internet Gateway (0.0.0.0/0).
+aws_route_table.tf_private_rt_1a	Resource	Tabela de rotas privada com saída via NAT Gateway da AZ 1a.
+aws_route_table.tf_private_rt_1b	Resource	Tabela de rotas privada com saída via NAT Gateway da AZ 1b.
+aws_route_table_association.public_1a_association	Resource	Associação da subnet pública 1a à tabela de rotas.
+aws_route_table_association.public_1b_association	Resource	Associação da subnet pública 1b à tabela de rotas.
+aws_route_table_association.private_1a_association	Resource	Associação da subnet privada 1a à tabela de rotas.
+aws_route_table_association.private_1b_association	Resource	Associação da subnet privada 1b à tabela de rotas.
+aws_flow_log.example	Resource	Configuração de VPC Flow Logs com destino em um bucket S3.
+aws_default_security_group.default	Resource	Configuração de segurança do Security Group padrão.
+Outputs
+Nome	Descrição
+vpc_id	Identificador único da VPC provisionada.
 
-### Providers
+Observações importantes
+Configure as credenciais da AWS antes de executar o provisionamento.
+Verifique se o backend remoto S3 está configurado corretamente antes de executar terraform init.
+Confirme se a versão do AWS Provider é compatível com os arquivos do projeto.
+As NAT Gateways, os endereços IP elásticos e outros recursos podem gerar custos enquanto estiverem ativos.
+Os recursos descritos nesta documentação devem ser conferidos com os arquivos Terraform existentes no repositório.
 
-| Name | Version |
-| --- | --- |
-| aws | 6.42.0 |[cite: 7]
 
-### Resources Criados
 
-| Recurso | Tipo | Descrição |
-| --- | --- | --- |
-| aws_vpc.terraform_vpc | resource | VPC com bloco CIDR 10.0.0.0/16[cite: 7] |
-| aws_subnet.subnet_public_1a | resource | Subnet pública na AZ 1a (10.0.1.0/24)[cite: 7] |
-| aws_subnet.subnet_public_1b | resource | Subnet pública na AZ 1b (10.0.2.0/24)[cite: 7] |
-| aws_subnet.subnet_private_1a | resource | Subnet privada na AZ 1a (10.0.100.0/24)[cite: 7] |
-| aws_subnet.subnet_private_1b | resource | Subnet privada na AZ 1b (10.0.200.0/24)[cite: 7] |
-| aws_internet_gateway.tf_igw | resource | Internet Gateway conectado à VPC[cite: 7] |
-| aws_eip.tf_ip_nat_1a | resource | IP Elástico alocado para a NAT Gateway da AZ 1a[cite: 7] |
-| aws_eip.tf_ip_nat_1b | resource | IP Elástico alocado para a NAT Gateway da AZ 1b[cite: 7] |
-| aws_nat_gateway.tf_natgateway_1a | resource | NAT Gateway para saída de internet da AZ 1a[cite: 7] |
-| aws_nat_gateway.tf_natgateway_1b | resource | NAT Gateway para saída de internet da AZ 1b[cite: 7] |
-| aws_route_table.tf_public_rt | resource | Tabela de rotas com saída via IGW (0.0.0.0/0)[cite: 7] |
-| aws_route_table.tf_private_rt_1a | resource | Tabela de rotas privada com saída via NAT 1a[cite: 7] |
-| aws_route_table.tf_private_rt_1b | resource | Tabela de rotas privada com saída via NAT 1b[cite: 7] |
-| aws_route_table_association.public_1a_association | resource | Associação de rota da subnet pública 1a[cite: 7] |
-| aws_route_table_association.public_1b_association | resource | Associação de rota da subnet pública 1b[cite: 2, 7] |
-| aws_route_table_association.private_1a_association | resource | Associação de rota da subnet privada 1a[cite: 2, 7] |
-| aws_route_table_association.private_1b_association | resource | Associação de rota da subnet privada 1b[cite: 2, 7] |
-| aws_flow_log.example | resource | Ativação de VPC Flow Logs para bucket S3[cite: 2, 7] |
-| aws_default_security_group.default | resource | Hardening do Security Group padrão[cite: 2, 7] |
 
-### Outputs
 
-| Name | Description |
-| --- | --- |
-| vpc_id | Identificador único da VPC provisionada |[cite: 3]
+
+
+
+
+
 
 
