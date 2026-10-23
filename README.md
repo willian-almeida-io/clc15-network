@@ -117,54 +117,89 @@ terraform destroy
 ```
 **Atenção:** revise os recursos que serão excluídos antes de confirmar a operação.
 
-Documentação técnica do Terraform
+📚 Documentação Técnica da Infraestrutura
 
-Requirements
-Nome	Versão
-Terraform	Compatível com a configuração do projeto
+Esta seção apresenta os requisitos técnicos, os provedores utilizados, os recursos provisionados e as saídas disponibilizadas pela infraestrutura definida com Terraform na AWS.
+
+1. Requisitos (Requirements)
+Componente	Versão
+Terraform CLI	Compatível com a configuração do projeto
 AWS Provider	6.42.0
-Providers
-Nome	Versão
+2. Provedores (Providers)
+Provedor	Versão
 aws	6.42.0
-Recursos criados
-Recurso	Tipo	Descrição
-aws_vpc.terraform_vpc	Resource	VPC com bloco CIDR 10.0.0.0/16.
-aws_subnet.subnet_public_1a	Resource	Subnet pública na AZ 1a, com CIDR 10.0.1.0/24.
-aws_subnet.subnet_public_1b	Resource	Subnet pública na AZ 1b, com CIDR 10.0.2.0/24.
-aws_subnet.subnet_private_1a	Resource	Subnet privada na AZ 1a, com CIDR 10.0.100.0/24.
-aws_subnet.subnet_private_1b	Resource	Subnet privada na AZ 1b, com CIDR 10.0.200.0/24.
-aws_internet_gateway.tf_igw	Resource	Internet Gateway conectado à VPC.
-aws_eip.tf_ip_nat_1a	Resource	IP Elástico para a NAT Gateway da AZ 1a.
-aws_eip.tf_ip_nat_1b	Resource	IP Elástico para a NAT Gateway da AZ 1b.
-aws_nat_gateway.tf_natgateway_1a	Resource	NAT Gateway para saída à internet na AZ 1a.
-aws_nat_gateway.tf_natgateway_1b	Resource	NAT Gateway para saída à internet na AZ 1b.
-aws_route_table.tf_public_rt	Resource	Tabela de rotas públicas com saída via Internet Gateway (0.0.0.0/0).
-aws_route_table.tf_private_rt_1a	Resource	Tabela de rotas privada com saída via NAT Gateway da AZ 1a.
-aws_route_table.tf_private_rt_1b	Resource	Tabela de rotas privada com saída via NAT Gateway da AZ 1b.
-aws_route_table_association.public_1a_association	Resource	Associação da subnet pública 1a à tabela de rotas.
-aws_route_table_association.public_1b_association	Resource	Associação da subnet pública 1b à tabela de rotas.
-aws_route_table_association.private_1a_association	Resource	Associação da subnet privada 1a à tabela de rotas.
-aws_route_table_association.private_1b_association	Resource	Associação da subnet privada 1b à tabela de rotas.
-aws_flow_log.example	Resource	Configuração de VPC Flow Logs com destino em um bucket S3.
-aws_default_security_group.default	Resource	Configuração de segurança do Security Group padrão.
 
-Outputs
+O AWS Provider permite que o Terraform interaja com os serviços da Amazon Web Services (AWS) para provisionar e gerenciar os recursos de infraestrutura.
 
-Nome	Descrição
-vpc_id	Identificador único da VPC provisionada.
+3. Recursos provisionados (Resources)
 
-Observações importantes
+A infraestrutura contempla uma VPC com sub-redes públicas e privadas distribuídas entre duas zonas de disponibilidade, gateways de conectividade, tabelas de rotas, associações de rotas e recursos de monitoramento e segurança.
 
-Configure as credenciais da AWS antes de executar o provisionamento.
+3.1. Rede e sub-redes
+Recurso Terraform	Tipo	Descrição
+aws_vpc.terraform_vpc	VPC	Rede virtual com bloco CIDR 10.0.0.0/16.
+aws_subnet.subnet_public_1a	Subnet	Sub-rede pública na AZ 1a, com CIDR 10.0.1.0/24.
+aws_subnet.subnet_public_1b	Subnet	Sub-rede pública na AZ 1b, com CIDR 10.0.2.0/24.
+aws_subnet.subnet_private_1a	Subnet	Sub-rede privada na AZ 1a, com CIDR 10.0.100.0/24.
+aws_subnet.subnet_private_1b	Subnet	Sub-rede privada na AZ 1b, com CIDR 10.0.200.0/24.
+3.2. Conectividade com a internet
+Recurso Terraform	Tipo	Descrição
+aws_internet_gateway.tf_igw	Internet Gateway	Gateway responsável pela conectividade entre a VPC e a internet.
+aws_eip.tf_ip_nat_1a	Elastic IP	Endereço IP público reservado para a NAT Gateway da AZ 1a.
+aws_eip.tf_ip_nat_1b	Elastic IP	Endereço IP público reservado para a NAT Gateway da AZ 1b.
+aws_nat_gateway.tf_natgateway_1a	NAT Gateway	Permite que recursos de sub-redes privadas acessem a internet por meio da AZ 1a.
+aws_nat_gateway.tf_natgateway_1b	NAT Gateway	Permite que recursos de sub-redes privadas acessem a internet por meio da AZ 1b.
+3.3. Tabelas e associações de rotas
+Recurso Terraform	Tipo	Descrição
+aws_route_table.tf_public_rt	Route Table	Tabela de rotas públicas com rota padrão 0.0.0.0/0 direcionada ao Internet Gateway.
+aws_route_table.tf_private_rt_1a	Route Table	Tabela de rotas privadas com saída para a internet por meio da NAT Gateway da AZ 1a.
+aws_route_table.tf_private_rt_1b	Route Table	Tabela de rotas privadas com saída para a internet por meio da NAT Gateway da AZ 1b.
+aws_route_table_association.public_1a_association	Route Association	Associa a sub-rede pública da AZ 1a à tabela de rotas correspondente.
+aws_route_table_association.public_1b_association	Route Association	Associa a sub-rede pública da AZ 1b à tabela de rotas correspondente.
+aws_route_table_association.private_1a_association	Route Association	Associa a sub-rede privada da AZ 1a à tabela de rotas correspondente.
+aws_route_table_association.private_1b_association	Route Association	Associa a sub-rede privada da AZ 1b à tabela de rotas correspondente.
+3.4. Monitoramento e segurança
+Recurso Terraform	Tipo	Descrição
+aws_flow_log.example	VPC Flow Logs	Configura a captura de informações sobre o tráfego de rede da VPC, com destino em um bucket S3.
+aws_default_security_group.default	Security Group	Gerencia as regras do grupo de segurança padrão da VPC, conforme a configuração definida no projeto.
+4. Saídas da infraestrutura (Outputs)
 
-Verifique se o backend remoto S3 está configurado corretamente antes de executar terraform init.
+Os outputs permitem consultar informações relevantes geradas após o provisionamento dos recursos.
 
-Confirme se a versão do AWS Provider é compatível com os arquivos do projeto.
+Output	Descrição
+vpc_id	Identificador único da VPC provisionada na AWS.
 
-As NAT Gateways, os endereços IP elásticos e outros recursos podem gerar custos enquanto estiverem ativos.
+Para consultar o identificador da VPC após a implantação, execute:
 
-Os recursos descritos nesta documentação devem ser conferidos com os arquivos Terraform existentes no repositório.
+terraform output vpc_id
 
+
+Para listar todas as saídas disponíveis:
+
+terraform output
+
+5. Considerações técnicas
+A arquitetura separa os recursos em sub-redes públicas e privadas, permitindo definir diferentes políticas de conectividade.
+As NAT Gateways permitem o acesso de saída à internet para recursos em sub-redes privadas, sem exigir endereços IP públicos nesses recursos.
+As tabelas de rotas determinam o encaminhamento do tráfego de rede de acordo com a configuração definida.
+O VPC Flow Logs auxilia na análise e no monitoramento do tráfego de rede.
+A configuração efetiva de segurança depende das regras definidas nos arquivos Terraform.
+
+Nota: esta documentação descreve os recursos informados para o projeto. Os nomes, as versões e as configurações devem ser conferidos com os arquivos Terraform e com o estado efetivamente provisionado na AWS.
+
+⚠️ Considerações importantes
+
+Antes de inicializar e provisionar a infraestrutura, verifique os seguintes requisitos:
+
+Credenciais AWS: configure as credenciais de acesso à AWS e certifique-se de que a identidade utilizada possui as permissões necessárias para criar e gerenciar os recursos definidos no projeto.
+Backend remoto S3: confirme se o bucket S3 e os demais parâmetros do backend remoto estão configurados corretamente antes de executar terraform init. Caso o backend ainda não exista, providencie sua criação conforme a configuração do projeto.
+Versão do Terraform e dos Providers: verifique a compatibilidade entre a versão do Terraform, o AWS Provider e os arquivos de configuração utilizados.
+Custos dos recursos: recursos como NAT Gateways, endereços IP elásticos e outros componentes da infraestrutura AWS podem gerar cobranças enquanto estiverem provisionados. Consulte os preços vigentes da AWS antes de iniciar a implantação.
+Validação da infraestrutura: confira se os recursos, as configurações e os outputs documentados correspondem aos arquivos Terraform presentes no repositório.
+
+Recomendação: execute terraform fmt -check, terraform validate e terraform plan antes de aplicar qualquer alteração. Revise cuidadosamente o plano gerado antes de executar terraform apply.
+
+Após a conclusão dos testes, avalie a necessidade de executar terraform destroy para remover os recursos provisionados e evitar custos desnecessários. Verifique os recursos que serão excluídos antes de confirmar a operação.
 
 
 ---
