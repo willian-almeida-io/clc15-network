@@ -158,8 +158,4 @@ terraform destroy
 | --- | --- |
 | vpc_id | Identificador único da VPC provisionada |[cite: 3]
 
-<Elicitations message="Pronto para salvar no Sublime e commitar?">
-  <Elicitation label="Commit feito com sucesso" query="Subi para o GitHub e ficou perfeito! Qual o próximo repositório que vamos avaliar?" />
-  <Elicitation label="Preciso de ajuda no commit" query="Como faço o commit e push dessa alteração pelo terminal?" />
-</Elicitations>
 
